@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Contracts\Cache\Store;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
@@ -21,11 +20,14 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $path = $request->file('image')->store('images', 's3');
-        // Storage::disk('s3')->setVisibility($path, 'images','s3');
+
+
+        $file = $request->file('image');
+        $path = $file->store('videos', 's3');
+        Storage::disk('s3')->setVisibility($path, 'public');
 
         $user = User::create([
-            'filename' => $request->image,
+            'filename' => $file->getClientOriginalName(),
             'url' => Storage::disk('s3')->url($path),
         ]);
 
