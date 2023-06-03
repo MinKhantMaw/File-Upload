@@ -20,14 +20,12 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-
-
         $file = $request->file('image');
-        $path = $file->store('videos', 's3');
+        $path = $file->store('images', 's3');
         Storage::disk('s3')->setVisibility($path, 'public');
 
         $user = User::create([
-            'filename' => $file->getClientOriginalName(),
+            'image' => $file->getClientOriginalName(),
             'url' => Storage::disk('s3')->url($path),
         ]);
 
